@@ -1,36 +1,37 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { fetchPeople } from './peopleSlice';
-//import styles from './Counter.module.css';
+//import styles from './People.module.css';
 
 class People extends React.Component {
-  //constructor(props) {
-  //  super(props);
-  //  console.log('props:', props);
-  //  this.state = {};
-  //}
 
   componentDidMount() {
-    console.log('props:', this.props);
+    //console.log('props:', this.props);
     this.props.dispatch(fetchPeople());
-    //fetchPeople();
-    console.log('component mounted');
+    //console.log('component mounted');
   }
 
   render() {
-    return (
-      <div>
-        Loading...
-      </div>
+    if (this.props.loading) {
+      return (
+        <div>Loading...</div>
+      );
+    }
+    const people = this.props.items;
+    const peopleList = people.map((person) =>
+      <div>{person.name}</div>
     );
+    return (
+      <div>{peopleList}</div>
+    )
   }
 
 }
 
-//const mapStateToProps = state => ({
-//  items: state.people.items,
-//  loading: state.people.loading,
-//  error: state.people.error
-//});
+const mapStateToProps = state => ({
+  items: state.people.items,
+  loading: state.people.loading,
+  error: state.people.error
+});
 
-export default connect()(People);
+export default connect(mapStateToProps)(People);
