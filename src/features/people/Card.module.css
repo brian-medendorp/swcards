@@ -1,6 +1,19 @@
 .card {
   border: 1px solid black;
-  padding: 1em;
-  margin: 1em;
+  //border-radius: 0.5em;
+  //box-shadow: 0 0 10px black;
+  padding: 0.5em 0.5em 1em;
+  margin: 0.5em;
   flex-basis: 25%;
+}
+
+.card h1 {
+  color: white;
+  background-color: #999;
+  line-height: 2em;
+  margin-top: 0px;
+}
+
+.card label {
+  font-weight: bold;
 }
