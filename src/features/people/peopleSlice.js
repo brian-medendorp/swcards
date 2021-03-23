@@ -25,19 +25,21 @@ export const peopleSlice = createSlice({
     fetchPeoplePending: state => {
       state.loading = true;
     },
-    fetchPeopleSuccess: (state, action) => {
-      state.items = action.payload;
+    fetchPeopleFinished: state => {
       state.loading = false;
     },
     fetchPeopleError: (state, action) => {
       state.items = [];
       state.error = action.error;
       state.loading = false;
+    },
+    addPeople: (state, action) => {
+      state.items = state.items.concat(action.payload);
     }
   },
 });
 
-export const { fetchPeoplePending, fetchPeopleSuccess, fetchPeopleError } = peopleSlice.actions;
+export const { fetchPeoplePending, fetchPeopleFinished, fetchPeopleError, addPeople } = peopleSlice.actions;
 
 // The function below is called a thunk and allows us to perform async logic. It
 // can be dispatched like a regular action: `dispatch(incrementAsync(10))`. This
@@ -49,13 +51,9 @@ export const fetchPeople = items => dispatch => {
     // TODO: add error handling
     .then(response => response.json())
     .then(json => {
-      dispatch(fetchPeopleSuccess(json.results))
+      dispatch(addPeople(json.results));
+      dispatch(fetchPeopleFinished());
   });
 };
-
-// The function below is called a selector and allows us to select a value from
-// the state. Selectors can also be defined inline where they're used instead of
-// in the slice file. For example: `useSelector((state) => state.counter.value)`
-//export const selectCount = state => state.counter.value;
 
 export default peopleSlice.reducer;
