@@ -35,23 +35,27 @@ export const peopleSlice = createSlice({
     },
     addPeople: (state, action) => {
       state.items = state.items.concat(action.payload);
+    },
+    emptyPeople: state => {
+      state.items = [];
     }
   },
 });
 
-export const { fetchPeoplePending, fetchPeopleFinished, fetchPeopleError, addPeople } = peopleSlice.actions;
+export const { fetchPeoplePending, fetchPeopleFinished, fetchPeopleError, addPeople, emptyPeople } = peopleSlice.actions;
 
 // The function below is called a thunk and allows us to perform async logic. It
 // can be dispatched like a regular action: `dispatch(incrementAsync(10))`. This
 // will call the thunk with the `dispatch` function as the first argument. Async
 // code can then be executed and other actions can be dispatched
 export const fetchPeople = items => dispatch => {
+  dispatch(emptyPeople()); // prevent duplictaes from hot-loading
   dispatch(fetchPeoplePending());
 
   // internal function to handle getting next page results
   // NOTE: there's probably a much better solution for this behavior, but this works for now
   function fetchNext(url) {
-    console.log("fetchNext", url);
+    //console.log("fetchNext", url);
     return fetch(url)
       // TODO: add error handling
       .then(response => response.json())
