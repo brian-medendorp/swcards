@@ -13,9 +13,10 @@ class People extends React.Component {
   }
 
   render() {
+    var loadingIndictor = '';
     if (this.props.loading) {
-      return (
-        <div>Loading...</div>
+      loadingIndictor = (
+        <Card key="loading" person={{name: "Loading"}} />
       );
     }
     const people = this.props.items;
@@ -24,7 +25,7 @@ class People extends React.Component {
     );
     return (
       <div>
-        <main className={styles.list}>{peopleList}</main>
+        <main className={styles.list}>{peopleList}{loadingIndictor}</main>
       </div>
     )
   }

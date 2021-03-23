@@ -1,10 +1,19 @@
-.card {
-  border: 1px solid black;
-  //border-radius: 0.5em;
-  //box-shadow: 0 0 10px black;
-  padding: 0.5em 0.5em 1em;
+.card, .loading {
   margin: 0.5em;
   flex-basis: 25%;
+}
+
+.card {
+  border: 1px solid black;
+  padding: 0.5em 0.5em 1em;
+}
+
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px dashed #ccc;
+  background-color: #fcfcfc;
 }
 
 .card h1 {
@@ -16,4 +25,8 @@
 
 .card label {
   font-weight: bold;
+}
+
+.loading > img {
+  height: 100px;
 }

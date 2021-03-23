@@ -1,7 +1,15 @@
 import React from 'react';
+import loading from './loading.svg';
 import styles from './Card.module.css';
 
 export function Card(props) {
+  if(props.person.name === "Loading") {
+    return (
+      <article className={styles.loading}>
+        <img src={loading} alt="Loading..." />
+      </article>
+    )
+  }
   return (
     <article className={styles.card}>
       <h1>{props.person.name}</h1>
