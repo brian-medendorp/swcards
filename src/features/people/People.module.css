@@ -1,0 +1,13 @@
+.list {
+  display: flex;
+  flex-direction: row;
+  flex-wrap:wrap;
+  justify-content: center;
+  align-items: stretch;
+}
+
+@media (max-width: 599px) {
+  .list {
+    flex-direction: column;
+  }
+}

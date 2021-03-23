@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { fetchPeople } from './peopleSlice';
 import { Card } from './Card';
-//import styles from './People.module.css';
+import styles from './People.module.css';
 
 class People extends React.Component {
 
@@ -20,10 +20,12 @@ class People extends React.Component {
     }
     const people = this.props.items;
     const peopleList = people.map((person) =>
-      <Card person={person} />
+      <Card key={person.name} person={person} />
     );
     return (
-      <main>{peopleList}</main>
+      <div>
+        <main className={styles.list}>{peopleList}</main>
+      </div>
     )
   }
 

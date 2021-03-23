@@ -1,9 +1,9 @@
 import React from 'react';
-//import styles from './Card.module.css';
+import styles from './Card.module.css';
 
 export function Card(props) {
   return (
-    <article>
+    <article className={styles.card}>
       <h1>{props.person.name}</h1>
       <div><label>Origin:</label> {props.person.homeworld}</div>
       <div><label>Height:</label> {props.person.height}</div>
