@@ -47,13 +47,25 @@ export const { fetchPeoplePending, fetchPeopleFinished, fetchPeopleError, addPeo
 // code can then be executed and other actions can be dispatched
 export const fetchPeople = items => dispatch => {
   dispatch(fetchPeoplePending());
-  return fetch("https://swapi.dev/api/people")
-    // TODO: add error handling
-    .then(response => response.json())
-    .then(json => {
-      dispatch(addPeople(json.results));
-      dispatch(fetchPeopleFinished());
-  });
+
+  // internal function to handle getting next page results
+  // NOTE: there's probably a much better solution for this behavior, but this works for now
+  function fetchNext(url) {
+    console.log("fetchNext", url);
+    return fetch(url)
+      // TODO: add error handling
+      .then(response => response.json())
+      .then(json => {
+        dispatch(addPeople(json.results));
+        if (json.next) {
+          fetchNext(json.next)
+        } else {
+          dispatch(fetchPeopleFinished());
+        }
+    });
+  }
+
+  return fetchNext("https://swapi.dev/api/people");
 };
 
 export default peopleSlice.reducer;
