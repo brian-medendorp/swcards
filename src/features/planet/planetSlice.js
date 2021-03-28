@@ -1,4 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { handleErrors } from './../../app/http'
 
 export const planetSlice = createSlice({
   name: 'planet',
@@ -25,25 +26,18 @@ export const fetchPlanets = items => dispatch => {
   // NOTE: there's probably a much better solution for this behavior, but this works for now
   function fetchNext(url) {
     return fetch(url)
-      // TODO: add error handling
+      .then(handleErrors)
       .then(response => response.json())
       .then(json => {
         dispatch(addPlanets(json.results));
         if (json.next) {
           fetchNext(json.next)
         }
-    });
+      })
+      .catch(error => console.log('Failed to fetch Planets ('+url+'): ', error))
   }
 
   return fetchNext("https://swapi.dev/api/planets");
 };
-
-// helper function to get the id from the URL
-// NOTE: probably a better place to put this, and could make it more generic
-export const extractId = url => {
-  // url should be of form: http://swapi.dev/api/planets/2/
-  var tokens = String(url).split('/');
-  return Number.parseInt(tokens[5]);
-}
 
 export default planetSlice.reducer;

@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { extractId } from './../planet/planetSlice';
+import { extractId } from './../../app/http'
 import loading from './loading.svg';
 import styles from './Card.module.css';
 

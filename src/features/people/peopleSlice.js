@@ -1,4 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { handleErrors } from './../../app/http'
 
 export const peopleSlice = createSlice({
   name: 'people',
@@ -39,7 +40,7 @@ export const fetchPeople = items => dispatch => {
   // NOTE: there's probably a much better solution for this behavior, but this works for now
   function fetchNext(url) {
     return fetch(url)
-      // TODO: add error handling
+      .then(handleErrors)
       .then(response => response.json())
       .then(json => {
         dispatch(addPeople(json.results));
@@ -48,7 +49,8 @@ export const fetchPeople = items => dispatch => {
         } else {
           dispatch(fetchPeopleFinished());
         }
-    });
+      })
+      .catch(error => console.log('Failed to fetch People ('+url+'): ', error))
   }
 
   return fetchNext("https://swapi.dev/api/people");
