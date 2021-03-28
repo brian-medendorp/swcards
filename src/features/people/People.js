@@ -36,8 +36,7 @@ class People extends React.Component {
 const mapStateToProps = state => ({
   people: state.people.items,
   loading: state.people.loading,
-  error: state.people.error,
-  planets: state.planet.items
+  error: state.people.error
 });
 
 export default connect(mapStateToProps)(People);
