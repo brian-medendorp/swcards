@@ -8,7 +8,7 @@ class Card extends React.Component {
 
   render() {
 
-    // Show loading indictor
+    // Show loading indicator
     if(this.props.person.name === "Loading") {
       return (
         <article className={styles.loading}>

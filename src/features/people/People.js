@@ -8,10 +8,9 @@ import styles from './People.module.css';
 class People extends React.Component {
 
   componentDidMount() {
-    //console.log('props:', this.props);
+    // kick off the data collection from the API
     this.props.dispatch(fetchPeople());
     this.props.dispatch(fetchPlanets());
-    //console.log('component mounted');
   }
 
   render() {
