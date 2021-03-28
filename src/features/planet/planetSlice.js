@@ -43,15 +43,11 @@ export const fetchPlanets = items => dispatch => {
 };
 
 // helper function to get the id from the URL
+// NOTE: probably a better place to put this, and could make it more generic
 export const extractId = url => {
   // url should be of form: http://swapi.dev/api/planets/2/
   var tokens = String(url).split('/');
   return Number.parseInt(tokens[5]);
 }
-
-// The function below is called a selector and allows us to select a value from
-// the state. Selectors can also be defined inline where they're used instead of
-// in the slice file. For example: `useSelector((state) => state.counter.value)`
-//export const selectPlanets = state => state.items;
 
 export default planetSlice.reducer;
