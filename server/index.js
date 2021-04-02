@@ -1,6 +1,13 @@
 const { ApolloServer, gql } = require('apollo-server');
 const { RESTDataSource } = require('apollo-datasource-rest');
 
+// copied over from src/app/http.js because it won't import ore require properly
+const extractId = url => {
+  // url should be of form: http://swapi.dev/api/planets/2/
+  var tokens = String(url).split('/');
+  return Number.parseInt(tokens[tokens.length-2]);
+}
+
 // A schema is a collection of type definitions (hence "typeDefs")
 // that together define the "shape" of queries that are executed against
 // your data.
@@ -14,6 +21,7 @@ const typeDefs = gql`
   }
 
   type Person {
+		url: String,
 	  name: String,
 	  height: String,
 	  mass: String,
@@ -23,6 +31,7 @@ const typeDefs = gql`
   }
 
   type Planet {
+		url: String,
 	  name: String
   }
 
@@ -33,7 +42,7 @@ const typeDefs = gql`
     books: [Book],
 	person(id: Int): Person,
 	planet(id: Int): Planet,
-	people: [Person],
+	people(page: Int): [Person],
   }
 `;
 
@@ -51,8 +60,8 @@ class StarWarsAPI extends RESTDataSource {
     return this.get(`planets/${id}`);
   }
 
-  async getPeople() {
-	const data = await this.get(`people/`);
+  async getPeople(page = 1) {
+	const data = await this.get(`people/`, { page: page });
     return data.results;
   }
 
@@ -81,16 +90,24 @@ const books = [
 const resolvers = {
   Query: {
     books: () => books,
-	person: async (_source, { id }, { dataSources }) => {
+		person: async (_source, { id }, { dataSources }) => {
   	  return dataSources.starwarsAPI.getPerson(id);
   	},
-	planet: async (_source, { id }, { dataSources }) => {
+		planet: async (_source, { id }, { dataSources }) => {
   	  return dataSources.starwarsAPI.getPlanet(id);
     },
-	people: async (_source, {}, { dataSources }) => {
-  	  return dataSources.starwarsAPI.getPeople();
+		people: async (_source, { page }, { dataSources }) => {
+  	  return dataSources.starwarsAPI.getPeople(page);
     }
   },
+  Person: {
+  	origin: async (_source, {  }, { dataSources }) => {
+	  	const id = extractId(_source.homeworld);
+			const planet = await dataSources.starwarsAPI.getPlanet(id);
+			return planet;
+			//return { url: _source.homeworld }
+  	}
+  }
 };
 
 // The ApolloServer constructor requires two parameters: your schema
