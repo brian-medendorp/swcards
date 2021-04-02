@@ -85,6 +85,9 @@ const server = new ApolloServer({
 			starwarsAPI: new StarWarsAPI()
 		};
 	},
+	cacheControl: {
+		defaultMaxAge: 600, // 10 minutes -- It's unclear if this is actually making a difference
+	}
 });
 
 // The `listen` method launches a web server.
