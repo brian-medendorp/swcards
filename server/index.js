@@ -17,7 +17,12 @@ const typeDefs = gql`
 	  name: String,
 	  height: String,
 	  mass: String,
-	  birth_year: String
+	  birth_year: String,
+	  homeworld: String
+  }
+
+  type Planet {
+	  name: String
   }
 
   # The "Query" type is special: it lists all of the available queries that
@@ -25,7 +30,8 @@ const typeDefs = gql`
   # case, the "books" query returns an array of zero or more Books (defined above).
   type Query {
     books: [Book],
-	person(id: Int): Person
+	person(id: Int): Person,
+	planet(id: Int): Planet
   }
 `;
 
@@ -37,6 +43,10 @@ class StarWarsAPI extends RESTDataSource {
 
   async getPerson(id) {
     return this.get(`people/${id}`);
+  }
+
+  async getPlanet(id) {
+    return this.get(`planets/${id}`);
   }
 
 //  async getMostViewedMovies(limit = 10) {
@@ -66,6 +76,9 @@ const resolvers = {
     books: () => books,
 	person: async (_source, { id }, { dataSources }) => {
   	  return dataSources.starwarsAPI.getPerson(id);
+  	},
+	planet: async (_source, { id }, { dataSources }) => {
+  	  return dataSources.starwarsAPI.getPlanet(id);
     }
   },
 };
