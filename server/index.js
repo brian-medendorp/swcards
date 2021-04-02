@@ -1,4 +1,5 @@
 const { ApolloServer, gql } = require('apollo-server');
+const { RESTDataSource } = require('apollo-datasource-rest');
 
 // A schema is a collection of type definitions (hence "typeDefs")
 // that together define the "shape" of queries that are executed against
@@ -12,13 +13,40 @@ const typeDefs = gql`
     author: String
   }
 
+  type Person {
+	  name: String,
+	  height: String,
+	  mass: String,
+	  birth_year: String
+  }
+
   # The "Query" type is special: it lists all of the available queries that
   # clients can execute, along with the return type for each. In this
   # case, the "books" query returns an array of zero or more Books (defined above).
   type Query {
-    books: [Book]
+    books: [Book],
+	person(id: Int): Person
   }
 `;
+
+class StarWarsAPI extends RESTDataSource {
+  constructor() {
+    super();
+    this.baseURL = 'https://swapi.dev/api/';
+  }
+
+  async getPerson(id) {
+    return this.get(`people/${id}`);
+  }
+
+//  async getMostViewedMovies(limit = 10) {
+//    const data = await this.get('movies', {
+//      per_page: limit,
+//      order_by: 'most_viewed',
+//    });
+//    return data.results;
+//  }
+}
 
 const books = [
   {
@@ -36,12 +64,28 @@ const books = [
 const resolvers = {
   Query: {
     books: () => books,
+	person: async (_source, { id }, { dataSources }) => {
+  	  return dataSources.starwarsAPI.getPerson(id);
+    }
   },
 };
 
 // The ApolloServer constructor requires two parameters: your schema
 // definition and your set of resolvers.
-const server = new ApolloServer({ typeDefs, resolvers });
+const server = new ApolloServer({
+	typeDefs,
+	resolvers,
+	dataSources: () => {
+		return {
+			starwarsAPI: new StarWarsAPI()
+		};
+	},
+	context: () => {
+		return {
+			token: 'foo',
+		};
+	},
+});
 
 // The `listen` method launches a web server.
 server.listen().then(({ url }) => {
