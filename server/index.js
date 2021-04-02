@@ -18,7 +18,8 @@ const typeDefs = gql`
 	  height: String,
 	  mass: String,
 	  birth_year: String,
-	  homeworld: String
+	  homeworld: String,
+	  origin: Planet
   }
 
   type Planet {
@@ -31,7 +32,8 @@ const typeDefs = gql`
   type Query {
     books: [Book],
 	person(id: Int): Person,
-	planet(id: Int): Planet
+	planet(id: Int): Planet,
+	people: [Person],
   }
 `;
 
@@ -47,6 +49,11 @@ class StarWarsAPI extends RESTDataSource {
 
   async getPlanet(id) {
     return this.get(`planets/${id}`);
+  }
+
+  async getPeople() {
+	const data = await this.get(`people/`);
+    return data.results;
   }
 
 //  async getMostViewedMovies(limit = 10) {
@@ -79,6 +86,9 @@ const resolvers = {
   	},
 	planet: async (_source, { id }, { dataSources }) => {
   	  return dataSources.starwarsAPI.getPlanet(id);
+    },
+	people: async (_source, {}, { dataSources }) => {
+  	  return dataSources.starwarsAPI.getPeople();
     }
   },
 };
