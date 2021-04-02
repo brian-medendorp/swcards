@@ -8,19 +8,17 @@ const extractId = url => {
   return Number.parseInt(tokens[tokens.length-2]);
 }
 
+const injectId = obj => {
+	obj.id = extractId(obj.url);
+	return obj;
+}
+
 // A schema is a collection of type definitions (hence "typeDefs")
 // that together define the "shape" of queries that are executed against
 // your data.
 const typeDefs = gql`
-  # Comments in GraphQL strings (such as this one) start with the hash (#) symbol.
-
-  # This "Book" type defines the queryable fields for every book in our data source.
-  type Book {
-    title: String
-    author: String
-  }
-
   type Person {
+		id: String,
 		url: String,
 	  name: String,
 	  height: String,
@@ -31,15 +29,14 @@ const typeDefs = gql`
   }
 
   type Planet {
+		id: String,
 		url: String,
 	  name: String
   }
 
   # The "Query" type is special: it lists all of the available queries that
-  # clients can execute, along with the return type for each. In this
-  # case, the "books" query returns an array of zero or more Books (defined above).
+  # clients can execute, along with the return type for each.
   type Query {
-    books: [Book],
 		person(id: Int): Person,
 		planet(id: Int): Planet,
 		people(page: Int): [Person],
@@ -53,56 +50,28 @@ class StarWarsAPI extends RESTDataSource {
   }
 
   async getPerson(id) {
-    return this.get(`people/${id}`);
+    return this.get(`people/${id}`).then(injectId);
   }
 
   async getPlanet(id) {
-    return this.get(`planets/${id}`);
+    return this.get(`planets/${id}`).then(injectId);
   }
 
   async getPeople(page = 1) {
-	const data = await this.get(`people/`, { page: page });
-    return data.results;
+		return this.get(`people/`, { page: page }).then(data => data.results.map(injectId));
   }
-
-//  async getMostViewedMovies(limit = 10) {
-//    const data = await this.get('movies', {
-//      per_page: limit,
-//      order_by: 'most_viewed',
-//    });
-//    return data.results;
-//  }
 }
-
-const books = [
-  {
-    title: 'The Awakening',
-    author: 'Kate Chopin',
-  },
-  {
-    title: 'City of Glass',
-    author: 'Paul Auster',
-  },
-];
 
 // Resolvers define the technique for fetching the types defined in the
 // schema. This resolver retrieves books from the "books" array above.
 const resolvers = {
   Query: {
-    books: () => books,
-		person: async (_source, { id }, { dataSources }) => {
-  	  return dataSources.starwarsAPI.getPerson(id);
-  	},
-		planet: async (_source, { id }, { dataSources }) => {
-  	  return dataSources.starwarsAPI.getPlanet(id);
-    },
-		people: async (_source, { page }, { dataSources }) => {
-  	  return dataSources.starwarsAPI.getPeople(page);
-    }
+		person: async (_source, { id }, { dataSources }) => dataSources.starwarsAPI.getPerson(id),
+		planet: async (_source, { id }, { dataSources }) => dataSources.starwarsAPI.getPlanet(id),
+		people: async (_source, { page }, { dataSources }) => dataSources.starwarsAPI.getPeople(page)
   },
   Person: {
-  	origin: async (_source, {  }, { dataSources }) =>
-			await dataSources.starwarsAPI.getPlanet(extractId(_source.homeworld))
+  	origin: async (_source, {  }, { dataSources }) => dataSources.starwarsAPI.getPlanet(extractId(_source.homeworld))
   }
 };
 
@@ -114,11 +83,6 @@ const server = new ApolloServer({
 	dataSources: () => {
 		return {
 			starwarsAPI: new StarWarsAPI()
-		};
-	},
-	context: () => {
-		return {
-			token: 'foo',
 		};
 	},
 });
