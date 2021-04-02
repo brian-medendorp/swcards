@@ -1,7 +1,7 @@
 const { ApolloServer, gql } = require('apollo-server');
 const { RESTDataSource } = require('apollo-datasource-rest');
 
-// copied over from src/app/http.js because it won't import ore require properly
+// NOTE: copied this over from src/app/http.js because it won't import or require properly
 const extractId = url => {
   // url should be of form: http://swapi.dev/api/planets/2/
   var tokens = String(url).split('/');
@@ -40,9 +40,9 @@ const typeDefs = gql`
   # case, the "books" query returns an array of zero or more Books (defined above).
   type Query {
     books: [Book],
-	person(id: Int): Person,
-	planet(id: Int): Planet,
-	people(page: Int): [Person],
+		person(id: Int): Person,
+		planet(id: Int): Planet,
+		people(page: Int): [Person],
   }
 `;
 
@@ -101,12 +101,8 @@ const resolvers = {
     }
   },
   Person: {
-  	origin: async (_source, {  }, { dataSources }) => {
-	  	const id = extractId(_source.homeworld);
-			const planet = await dataSources.starwarsAPI.getPlanet(id);
-			return planet;
-			//return { url: _source.homeworld }
-  	}
+  	origin: async (_source, {  }, { dataSources }) =>
+			await dataSources.starwarsAPI.getPlanet(extractId(_source.homeworld))
   }
 };
 
