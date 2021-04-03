@@ -9,8 +9,8 @@ class People extends React.Component {
 
   componentDidMount() {
     // kick off the data collection from the API
-    this.props.dispatch(fetchPeople());
-    this.props.dispatch(fetchPlanets());
+    //this.props.dispatch(fetchPeople());
+    //this.props.dispatch(fetchPlanets());
   }
 
   render() {
