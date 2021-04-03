@@ -49,7 +49,7 @@ export const People = props => {
 				{loading && <Card key="loading" person={{name: "Loading"}} />}
 			</main>
 			<footer>
-				{!data || (data && data.people.length % 10 == 0) && <button onClick={() => { onLoadMore() } } disabled={loading}>Load More</button>}
+				{(!data || data.people.length % 10 === 0) && <button onClick={() => { onLoadMore() } } disabled={loading}>Load More</button>}
 			</footer>
     </div>
   )
