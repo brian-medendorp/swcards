@@ -30,11 +30,7 @@ export const People = props => {
 		fetchMore({
 			variables: {
 				page: Math.floor(data.people.length / 10)+1
-			},
-			//updateQuery: (prev, { fetchMoreResult }) => {
-			//	if (!fetchMoreResult || data.people.length % 10 > 0) return prev;
-			//	return { people: [...prev.people, ...fetchMoreResult.people] };
-			//}
+			}
 		});
 	}
 

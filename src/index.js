@@ -4,7 +4,6 @@ import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client';
-//import { offsetLimitPagination } from "@apollo/client/utilities";
 
 // add the connection to the graphQL server
 const client = new ApolloClient({
