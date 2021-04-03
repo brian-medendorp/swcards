@@ -3,9 +3,9 @@ import { Card } from './Card';
 import styles from './People.module.css';
 import { useQuery, gql } from '@apollo/client';
 
-const PEOPLE = gql`
-	query GetPeople {
-		people(page: 1) {
+const GET_PEOPLE = gql`
+	query People($page: Int!) {
+		people(page: $page) {
 			name,
 			height,
 			mass,
@@ -17,8 +17,11 @@ const PEOPLE = gql`
 	}
 `;
 
-export function People(props) {
-	const { loading, error, data } = useQuery(PEOPLE);
+export function People({ page }) {
+	console.log('page:', page);
+	const { loading, error, data } = useQuery(GET_PEOPLE, {
+		variables: { page }
+	});
 
 	// Error
 	if (error) return <p>Error</p>;
