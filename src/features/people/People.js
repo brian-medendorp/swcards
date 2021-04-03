@@ -18,12 +18,25 @@ const GET_PEOPLE = gql`
 `;
 
 export const People = props => {
+	let page = 1;
 	const { loading, error, data, fetchMore } = useQuery(GET_PEOPLE, {
 		variables: {
-			page: props.page
+			page: page
 		},
 		fetchPolicy: "cache-and-network"
 	});
+
+	const onLoadMore = () => {
+		fetchMore({
+			variables: {
+				page: Math.floor(data.people.length / 10)+1
+			},
+			//updateQuery: (prev, { fetchMoreResult }) => {
+			//	if (!fetchMoreResult || data.people.length % 10 > 0) return prev;
+			//	return { people: [...prev.people, ...fetchMoreResult.people] };
+			//}
+		});
+	}
 
   return (
     <div>
@@ -35,6 +48,9 @@ export const People = props => {
 				{!error && data && data.people.length && data.people.map((person) => <Card key={person.name} person={person}/>)}
 				{loading && <Card key="loading" person={{name: "Loading"}} />}
 			</main>
+			<footer>
+				<button onClick={() => { onLoadMore() }}>Load More</button>
+			</footer>
     </div>
   )
 }

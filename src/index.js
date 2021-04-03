@@ -4,11 +4,33 @@ import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client';
+//import { offsetLimitPagination } from "@apollo/client/utilities";
 
 // add the connection to the graphQL server
 const client = new ApolloClient({
   uri: 'http://localhost:4000',
-  cache: new InMemoryCache()
+  cache: new InMemoryCache({
+		typePolicies: {
+			Query: {
+				fields: {
+					people: {
+						keyArgs: false,
+						merge(existing = [], incoming) {
+							// special case to prevent duplicates on the last page -- probably a better way to do this
+							if (existing.length % 10) return [...existing];
+							return [...existing, ...incoming];
+						},
+					},
+				},
+			},
+			Person: {
+				keyFields: ["name"],
+			},
+			Planet: {
+				keyFields: ["name"],
+			}
+		}
+	})
 });
 
 ReactDOM.render(
