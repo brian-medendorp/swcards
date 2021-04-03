@@ -3,33 +3,20 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import store from './app/store';
-import { Provider } from 'react-redux';
 import * as serviceWorker from './serviceWorker';
-import { ApolloClient, InMemoryCache } from '@apollo/client';
-import { gql } from '@apollo/client';
+import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client';
 
+// add the connection to the graphQL server
 const client = new ApolloClient({
   uri: 'http://localhost:4000',
   cache: new InMemoryCache()
 });
 
-client
-  .query({
-    query: gql`
-      query GetPeople {
-        people(page: 1) {
-          name
-        }
-      }
-    `
-  })
-  .then(result => console.log(result));
-
 ReactDOM.render(
   <React.StrictMode>
-    <Provider store={store}>
-      <App />
-    </Provider>
+		<ApolloProvider client={client}>
+    	<App />
+		</ApolloProvider>
   </React.StrictMode>,
   document.getElementById('root')
 );

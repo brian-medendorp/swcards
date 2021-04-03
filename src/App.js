@@ -1,5 +1,5 @@
 import React from 'react';
-import People from './features/people/People';
+import { People } from './features/people/People';
 import './App.css';
 
 function App() {
