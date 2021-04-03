@@ -1,5 +1,6 @@
 const { ApolloServer, gql } = require('apollo-server');
 const { RESTDataSource } = require('apollo-datasource-rest');
+const responseCachePlugin = require('apollo-server-plugin-response-cache');
 
 // NOTE: copied this over from src/app/http.js because it won't import or require properly
 const extractId = url => {
@@ -86,8 +87,9 @@ const server = new ApolloServer({
 		};
 	},
 	cacheControl: {
-		defaultMaxAge: 600, // 10 minutes -- It's unclear if this is actually making a difference
-	}
+		defaultMaxAge: 600,
+	},
+	plugins: [responseCachePlugin()],
 });
 
 // The `listen` method launches a web server.
