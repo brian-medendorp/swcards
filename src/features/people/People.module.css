@@ -6,6 +6,10 @@
   align-items: stretch;
 }
 
+.list + footer {
+	margin-bottom: 1em;
+}
+
 @media (max-width: 599px) {
   .list {
     flex-direction: column;
