@@ -17,34 +17,24 @@ const GET_PEOPLE = gql`
 	}
 `;
 
-export function People({ page }) {
-	const { loading, error, data } = useQuery(GET_PEOPLE, {
-		variables: { page }
+export const People = props => {
+	const { loading, error, data, fetchMore } = useQuery(GET_PEOPLE, {
+		variables: {
+			page: props.page
+		},
+		fetchPolicy: "cache-and-network"
 	});
 
-	// Error
-	if (error) return <p>Error</p>;
-
-	// Loading
-  if (loading) {
-  	return (
-			<div>
-	      <main className={styles.list}>
-      		<Card key="loading" person={{name: "Loading"}} />
-				</main>
-			</div>
-    );
-  }
-
-	// People
-	const peopleList = data.people.map((person) =>
-    <Card key={person.name} person={person}/>
-  );
-
-	// Display
   return (
     <div>
-      <main className={styles.list}>{peopleList}</main>
+			<header>
+				{error && <p>Error</p>}
+				{!loading && !data && <p>No results found.</p>}
+			</header>
+      <main className={styles.list}>
+				{!error && data && data.people.length && data.people.map((person) => <Card key={person.name} person={person}/>)}
+				{loading && <Card key="loading" person={{name: "Loading"}} />}
+			</main>
     </div>
   )
 }
