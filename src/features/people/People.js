@@ -18,7 +18,6 @@ const GET_PEOPLE = gql`
 `;
 
 export function People({ page }) {
-	console.log('page:', page);
 	const { loading, error, data } = useQuery(GET_PEOPLE, {
 		variables: { page }
 	});
